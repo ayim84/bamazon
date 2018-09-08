@@ -23,7 +23,6 @@ connection.connect(function(err)
         throw err;
     }
 
-    //console.log("Connected as id " + connection.threadId);
     readBamazon();
 });
 
@@ -47,7 +46,6 @@ function readBamazon()
                 console.log("# Available: " + element.stock_quantity);
                 console.log("-------------------------------------------------");
             });
-            //console.log(response);
             placeOrder();
         }
     )
@@ -97,7 +95,7 @@ function placeOrder()
                     selectedQuantity = answer.qty;
                     currentQuantity = results[0].stock_quantity;
                     currentPrice = results[0].price;
-                    console.log(results);
+                    // console.log(results);
 
                     if(err)
                     {
@@ -110,8 +108,8 @@ function placeOrder()
                     }
                     else
                     {
-                        console.log("Insufficient Quantity!");
-                        connection.end();
+                        console.log("Insufficient Quantity!  There are " + currentQuantity + " units available.  You ordered " + selectedQuantity + " unit(s).");
+                        runAgain();
                     }
                 }
             );
@@ -133,7 +131,13 @@ function updateProducts()
     {
         var orderPrice = currentPrice * selectedQuantity;
         console.log("Order Price: $" + orderPrice);
-        inquirer.prompt
+        runAgain();
+    });
+}
+
+function runAgain()
+{
+    inquirer.prompt
         (
             [
                 {
@@ -151,8 +155,8 @@ function updateProducts()
             }
             else
             {
+                console.log("Thank you for visiting Bamazon. Please come back soon!");
                 connection.end();    
             }
         });
-    });
 }
